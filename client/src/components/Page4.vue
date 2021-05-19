@@ -1,0 +1,218 @@
+<template>
+    <div>
+
+      <!-- Create a div where the graph will take place -->
+        <!-- <TrendPlot/> -->
+<!--         <trend
+          :data="deltas"
+          :gradient="['#6fa8dc', '#42b983', '#2c3e50']"
+          auto-draw
+          smooth
+        >
+        </trend> -->
+
+      <b-container>
+      <b-row align-h='center'>
+      <p>
+        <strong>Session ID:</strong> {{ this.$globals.sessionId }} <br>
+      </p>
+    </b-row>
+            <hr class="my-4">
+      <b-row>
+
+          <h2>Summary</h2>
+          </b-row>
+          <b-row>
+            <b-col cols="8">
+            <p style="text-align: left;">
+              The video clip consists of {{ this.n_total_segs }} utterances. Given the {{ this.n_annos }} annotations provided by the user in the last step, we generated the predictions for the remaining part of the video. 
+            </p>
+            <p style="text-align: left;">
+              Out of the {{ this.n_preds }} predictions, <strong>{{ this.n_t_segs }}</strong> are classified as <strong>Teacher</strong>'s, and <strong>{{ this.n_s_segs }}</strong> are classified as <strong>Students</strong>'.
+            </p>
+            <p style="text-align: left;">
+              Regarding the confidential scores, the average score differences between the two classes is {{ this.preds.mean.toFixed(3) }}, with a standard deviation of {{ this.preds.std.toFixed(3) }}.
+            </p>
+          </b-col>
+          <b-col>
+            
+        <b-table hover :items="stat_table_items"></b-table>
+          </b-col>
+          </b-row>
+        </b-container>
+
+      <b-container class="my-2">
+        <!-- {{ this.preds }} -->
+        <!-- {{ this.deltas }} -->
+        
+
+
+        <h2>Prediction results</h2>
+        <b-table hover :items="table_items" ></b-table>
+          <b-row align-h="center" class="my-4">
+                  <!-- <b-button type="button" class="btn cbuttons" variant="danger">Back</b-button> -->
+                  <b-button type="button" class="cbuttons" @click="onSubmit()" variant="success">Finish</b-button>
+          </b-row>
+
+
+      </b-container>
+    </div>
+</template>
+
+<script>
+import axios from 'axios';
+import Vue from 'vue'
+//import * as d3 from 'd3'
+// import Trend from "vuetrend"
+// Vue.use(Trend)
+
+
+export default {
+    name: 'Page4',
+    
+    components: {
+    },
+    
+    props:{
+    },
+
+    methods: {
+      swtich2Tab(selected){
+            console.log('Directed to page'+selected);
+            var tabs = document.getElementById("header").getElementsByTagName("span");
+            for (var i = 0; i < tabs.length; i++) {
+                var tab = tabs[i];
+            if (i==selected) {
+                tab.classList.add('tab-selected');
+            }else{
+                tab.classList.remove('tab-selected');
+            }
+          }
+        },
+      onSubmit(){
+        const info = {
+            sessionId: this.$globals.sessionId,
+            filename: this.$globals.file
+        };
+        const path = 'http://127.0.0.1:5000/api/submit';
+                  axios.post(path, info)
+                    .then((res) => { 
+                        console.log("[Page 4] Submission done");
+                    })
+                    .catch((error) => {
+                      // eslint-disable-next-line
+                      console.log(error);
+                      // this.getBooks();
+                    });
+        console.log('[Page 4] Results submited ');
+
+        this.switch2Tab(0);
+        this.$router.push('/Page0');
+
+      }
+
+    },
+
+    created(){
+      console.log("Session ID: "+this.$globals.sessionId);
+      this.preds = this.$globals.adjusted_preds;
+      this.pred_id = this.$globals.adjusted_pred_id;
+      console.log(this.preds);
+      console.log(this.preds.preds);
+
+      this.n_total_segs = 0;
+      this.n_annos = 0;
+      this.n_preds = 0;
+      this.n_t_segs = 0;
+      this.n_s_segs = 0;
+      this.table_items = [];
+      this.max_score = parseFloat(this.preds['max'].toFixed(3));
+      this.min_score = parseFloat(this.preds['min'].toFixed(3));
+
+      this.stat_table_items = [];
+      this.stat_table_items.push({attribute: "Min", value: this.preds['min'].toFixed(3)});
+      this.stat_table_items.push({attribute: "25%", value: this.preds['25%'].toFixed(3)});
+      this.stat_table_items.push({attribute: "50%", value: this.preds['50%'].toFixed(3)});
+      this.stat_table_items.push({attribute: "75%", value: this.preds['75%'].toFixed(3)});
+      this.stat_table_items.push({attribute: "Max", value: this.preds['max'].toFixed(3)});
+      this.stat_table_items.push({attribute: "Mean", value: this.preds['mean'].toFixed(3)});
+      this.stat_table_items.push({attribute: "S.D", value: this.preds['std'].toFixed(3)});
+
+      if (this.preds.hasOwnProperty('adjustedAnnos')) { // display the most updated annotations from P3 (P1 + P3 changes)
+        let pp = this.preds['adjustedAnnos'];
+        this.n_annos = Object.keys(this.preds['adjustedAnnos']).length;
+        this.n_total_segs = this.n_annos;
+
+        for (var idx in pp) {
+          this.table_items.push({
+            start_timestamp: idx,
+            type: 'Annotation',
+            delta: 'N/A',
+            speaker: pp[idx],
+            _rowVariant: 'danger'
+          });
+        }
+      }
+
+      var cell_color = {'T':'primary','S':'success'};
+      if (this.preds.hasOwnProperty('preds')) {
+        let pp = this.preds.preds;
+        this.n_preds = Object.keys(this.preds.preds).length;
+        this.n_total_segs = this.n_total_segs + this.n_preds;
+        for (var idx in pp) {
+          if (pp[idx]['Pred']=='T') {
+            this.n_t_segs+=1;
+          }else{
+            this.n_s_segs+=1;
+          }
+
+          this.deltas.push(pp[idx]['Delta']);
+          this.table_items.push({
+            start_timestamp: pp[idx]['File'],
+            type: 'Prediction',
+            delta: pp[idx]['Delta'].toFixed(3),
+            speaker: pp[idx]['Pred'],
+            _cellVariants: { speaker: cell_color[pp[idx]['Pred']] }
+          });
+        }
+      }
+      console.log(this.table_items);
+      console.log(this.deltas);
+      console.log(this.n_total_segs);
+
+    },
+
+    mounted(){
+
+
+    },
+
+    data () {
+        return {
+            selectedVideo: this.$globals.file,
+            sessionId: null,
+            preds: null,
+            pred_id:null,
+            deltas: [],
+            table_items: null,
+            max_score: null,
+            min_score: null,
+            avg_score: null,
+            n_t_segs: null,
+            n_s_segs: null,
+            n_annos: null,
+            n_preds: null,
+            n_total_segs: null,
+
+      };
+    }
+}
+</script>
+<style type="text/css">
+  
+    .cbuttons{
+        width: 250px;
+        height: 60px;
+        margin:30px;
+    }
+</style>

@@ -1,0 +1,108 @@
+
+.body{
+	position: relative;
+}
+
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 100%;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+    font-weight: 400;
+ 
+    position: absolute;
+    z-index: 100;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.top{
+	width: 100%;
+	height: 135px;
+	text-align: center;
+	margin-top: 0px;
+	margin-bottom: 30px;
+	background-color: #5bc0de;
+  	/*box-shadow: 0 5px 10px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);*/
+  	z-index: 300;
+  	padding-top: 30px;
+  	position: relative;
+}
+
+.tab-selected {
+background-color: #FDFEFB;
+color: #777 !important;
+}
+
+
+/*.top .title img{
+	height: 70px;
+	width: 70px;
+	margin: 10px;
+}
+*/
+/*.top .title .l{
+	margin-right: 0px;
+}*/
+
+.top .primary-title{
+	position: relative;
+}
+
+.top .sub-title{
+	margin-bottom:20px;
+}
+
+/*.primary-title span{
+	position: absolute;
+	width: 100%;
+	top:0px;
+	left: 0px;
+	height: 100%;
+	color: transparent;
+	z-index: 1000;
+}*/
+
+.top .title h1 {
+	color: #fff;
+}
+/*
+.top span{
+
+}*/
+
+.footer{
+	background-color: #FDFEFB;
+	height: 100px;
+	z-index: 10;
+	text-align: right;
+	position: relative;
+	bottom: 0px;
+}
+
+.footer-content{
+	position: absolute;
+	right: 10px;
+	margin-top: 20px;
+}
+
+.footer-content p{
+	color: #757575;
+	font-size: 16px;
+}
+
+.btn-default{
+	color: #FDFDFD
+}
+
