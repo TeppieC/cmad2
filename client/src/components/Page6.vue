@@ -18,20 +18,33 @@
 
         <div align-h='center'>
           <b-card no-body >
-            <div>
+            <b-container class="my-2">
+              <b-row>
+              <b-col cols="6"> Select a period</b-col>
+              <b-col cols="4"><b-form-select v-model="view_period" @change="onPeriodSelectorChange($event)" :options="periods" value-field="name"
+                text-field="name" size="md"></b-form-select></b-col>
+              <b-col cols="2"></b-col>
+              </b-row>
                 
-              <b-form-select v-model="view_period" @change="onPeriodSelectorChange($event)" :options="periods" value-field="name"
-                    text-field="name" size="md"></b-form-select>
-            </div>
+              
+            </b-container>
               <b-tabs card>
                 <b-tab title="Keywords" active>
                     <apexchart 
-                        id="chart_v1" 
+                        id="chart_v1_s" 
                         ref="realtimeChart"
                         type="bar" 
                         height="440" 
-                        :options="chartOptions_v1" 
-                        :series="series_v1"></apexchart>
+                        :options="chartOptions_v1_s" 
+                        :series="series_v1_s"></apexchart>
+
+                    <apexchart 
+                        id="chart_v1_t" 
+                        ref="realtimeChart"
+                        type="bar" 
+                        height="440" 
+                        :options="chartOptions_v1_t" 
+                        :series="series_v1_t"></apexchart>
                 </b-tab>
                               <!-- <b-tab title="# occurence" active>
                     <apexchart type="bar" height="440" :options="chartOptions" :series="series"></apexchart>
@@ -40,13 +53,32 @@
                     <apexchart type="bar" height="440" :options="chartOptions" :series="series"></apexchart>
                 </b-tab> -->
               </b-tabs>
+
+          <b-container id='kw_detail' style="display: none">
+            <hr class="my-4">
+            <b-row align-h="center">
+              <b-col cols="6">
+                  <p><strong id="selected_kw">{{ this.selected_kw }}</strong></p>
+                  <b-row style="width:600px; " align-v="end">
+                    <b-col cols="8" >
+                      
+                      
+                    </b-col>
+                    
+                  </b-row>
+              </b-col>
+            </b-row>
+          </b-container>
           </b-card>
+
+
         </div>
+        
 
         <!-- <b-table hover :items="table_items" ></b-table> -->
         <b-row align-h="center" class="my-4">
                 <!-- <b-button type="button" class="btn cbuttons" variant="danger">Back</b-button> -->
-                <b-button type="button" class="cbuttons" @click="onSubmit()" variant="success">Finish</b-button>
+                <!-- <b-button type="button" class="cbuttons" @click="onSubmit()" variant="success">Finish</b-button> -->
         </b-row>
 
 
@@ -129,24 +161,25 @@ export default {
           // console.log('[Page 0] File switched to ', value); 
       },
       updateViz(){
-        var s_values = []
-        for (var i = 0; i < this.students_segs[this.view_period][1].length; i++) {
-          s_values.push(-this.students_segs[this.view_period][1][i]);
-        }
-        this.series_v1 = [
+
+        this.series_v1_s = [
                             {
                               name: 'Students',
-                              data: s_values,
+                              data: this.students_segs[this.view_period][1],
                               // labels: this.students_segs[this.view_period][0]
-                            },
+                            }
+                          ]
+        this.series_v1_t = [
                             {
                               name: 'Teacher',
                               data: this.teacher_segs[this.view_period][1],
                               // labels: this.teacher_segs[this.view_period][0]
-                            }
-                          ]
-        this.chartOptions_v1 = {
-         labels: [this.students_segs[this.view_period][0], this.teacher_segs[this.view_period][0]]
+                            }]
+        this.chartOptions_v1_s = {
+         labels: [this.students_segs[this.view_period][0]]
+        }
+        this.chartOptions_v1_t = {
+         labels: [this.teacher_segs[this.view_period][0]]
         }
 
         // this.$refs.realtimeChart.updateSeries(this.series_v1, false, true);
@@ -154,27 +187,25 @@ export default {
         // this.series_v1[0].labels = this.students_segs[this.view_period][0];
         // this.series_v1[1].data = this.teacher_segs[this.view_period][1];
         // this.series_v1[1].labels = this.teacher_segs[this.view_period][0];
-        console.log(this.series_v1);//
+        console.log(this.series_v1_s);//
+        console.log(this.series_v1_t);//
 
         // var chart = new ApexCharts(document.querySelector("#chart_v1"), this.chartOptions_v1);
         // chart.render();
 
-      },
-      updateChart() {
-        const max = 90;
-        const min = 20;
-        const newData = this.series_v1[0].data.map(() => {
-          return Math.floor(Math.random() * (max - min + 1)) + min
-        })
-        // In the same way, update the series option
-        this.series_v1 = [{
-          data: newData
-        }];
-
-      },
-      updateVizOptions(){
-
       }
+      // updateChart() {
+      //   const max = 90;
+      //   const min = 20;
+      //   const newData = this.series_v1[0].data.map(() => {
+      //     return Math.floor(Math.random() * (max - min + 1)) + min
+      //   })
+      //   // In the same way, update the series option
+      //   this.series_v1 = [{
+      //     data: newData
+      //   }];
+
+      // }
     },
     beforeCreate(){
 
@@ -204,11 +235,12 @@ export default {
       var num_periods = this.analyses_res.config.num_periods;
       var num_keywords =  this.analyses_res.config.num_keywords;
       this.periods = Object.keys(this.students_segs); // TODO: assuming both sides have the same number of periods, even with empty keyword data
-      this.view_period = this.periods[this.view_period]; // use timestamp in seconds as index
+      this.view_period = this.periods[0]; // use timestamp in seconds as index
+      this.updateViz();
       // console.log(this.periods);      
       // console.log(this.students_segs[this.view_period]);
       // console.log(num_periods);
-      console.log(this.series_v1);
+      // console.log(this.series_v1_s);
       // var cell_color = {'T':'primary','S':'success'};
       // if (this.preds.hasOwnProperty('preds')) {
       //   let pp = this.preds.preds;
@@ -250,35 +282,55 @@ export default {
           selectedVideo:null,
           // table_items:null,
           periods:[], // available periods
-          view_period:0, // the period that is currently displayed
-
+          view_period:null, // the period that is currently displayed
+          selected_kw: null, // the keyword selected to display details
           // teacher_keywords:[],
           // students_keywords: [],
-          series_v1: [{
+          series_v1_s: [{
             name: 'Students',
             data: [], // scores
             // data: [0.7756799031784363, 0.7756799031784363, 0.7687249135190602, 0.7601013610898208, 0.7585123736110231, 0.7371205633923014, 0.7355330622565307, 0.659436505067051, 0.3424107600809398, 0.31138173371255223, 0.3044788300614989, 0.30056451594067535, 0.26323272356511407, 0.26323272356511407, 0.16905133555086116, 0.12806557992766787, 0.11449109755714651, 0.10832898960079078, 0.0892841109343624, 0.04314630378298711],
-          },
+          }],
+          series_v1_t:[
           {
             name: 'Teacher',
             data: [], // scores
             // data: [0.7756799031784363, 0.7756799031784363, 0.7687249135190602, 0.7601013610898208, 0.7585123736110231, 0.7371205633923014, 0.7355330622565307, 0.659436505067051, 0.3424107600809398, 0.31138173371255223, 0.3044788300614989, 0.30056451594067535, 0.26323272356511407, 0.26323272356511407, 0.16905133555086116, 0.12806557992766787, 0.11449109755714651, 0.10832898960079078, 0.0892841109343624, 0.04314630378298711],
           }
           ],
-          chartOptions_v1: {
+          chartOptions_v1_s: {
             labels: [], // add for keywords
             chart: {
               type: 'bar',
               height: 440,
               stacked: true,
               events: {
-              click: function(event, chartContext, config) {
-                // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts
-                console.log('hw');
+                // click: function(event, chartContext, config) {
+                //   // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts
+                //   console.log(config.config.series[config.dataPointIndex]);
+                //   var kd = document.getElementById("kw_detail");
+                //     if (this.selected_kw==null){
+                //       kd.style.display = 'none';
+                //     }else{
+                //       kd.style.display = 'block';
+                //   }
+                // },
+                dataPointSelection: function(event, chartContext, config) {
+                  console.log(config.dataPointIndex);
+                  console.log(config.w.config.labels[0][config.dataPointIndex]);
+                  var kd = document.getElementById("kw_detail");
+                  var kw = document.getElementById("selected_kw");
+                  kw.innerHTML = config.w.config.labels[0][config.dataPointIndex]; // assign the keyword
+                  if (kw.innerHTML==null){
+                      kd.style.display = 'none';
+                    }else{
+                      kd.style.display = 'block';
+                  }
+                  // other things follows
+                }
               }
-            }
             },
-            colors: ['#008FFB', '#FF4560'],
+            colors: [ '#FF4560'],
             plotOptions: {
               bar: {
                 horizontal: true,
@@ -289,9 +341,9 @@ export default {
               enabled: true,
               textAnchor: 'start',
               style: {
-                  colors: ['#777']
+                  colors: ['#fff']
               },
-              offsetX: 70,
+              offsetX: 0,
               formatter: function (val, opt) {
                 // console.log(opt.w.config.series[opt.seriesIndex]);
                 return opt.w.config.labels[opt.seriesIndex][opt.dataPointIndex] + ":  " + Math.abs(Math.round(val* 100) / 100)
@@ -310,35 +362,136 @@ export default {
               }
             },
             yaxis: {
-              min: -1,
-              max: 1,
               title: {
-                // text: 'Age',
+                text: 'Keywords',
               },
+
+              labels: {
+                show: false
+              }
             },
             tooltip: {
-              shared: false,
+              theme: "dark",
               x: {
-                formatter: function (val, opt) {
-                  return opt.w.config.labels[opt.seriesIndex][opt.dataPointIndex]
+                  formatter: function (val, opt) {
+                    return opt.w.config.labels[opt.seriesIndex][opt.dataPointIndex]
                 }
               },
               y: {
-                formatter: function (val) {
-                  return "Keyword score: " + Math.abs(Math.round(val* 100) / 100)
+                title: {
+                  formatter: function (val) {
+                  return Math.abs(Math.round(val* 100) / 100)
+                  }
                 }
               }
             },
             title: {
-              text: 'Keywords extracted, ranked by keyword score, students vs. teacher'
+              text: 'Extracted keywords, ranked by the keyword scores (students)',
+        align: "center",
+        floating: true
             },
             xaxis: {
-              categories: ["Keyword #1", "Keyword #2", "Keyword #3", "Keyword #4", "Keyword #5", "Keyword #6", "Keyword #7", "Keyword #8", "Keyword #9", "Keyword #10", "Keyword #11", "Keyword #12", "Keyword #13", "Keyword #14", "Keyword #15", "Keyword #16", "Keyword #17", "Keyword #18", "Keyword #19", "Keyword #20"],
+              categories: ['Keywords'],
               title: {
                 text: 'Keyword Score'
               },
 
-              min: -1,
+              min: 0,
+              max: 1,
+              labels: {
+                formatter: function (val) {
+                  return Math.abs(Math.round(val* 100) / 100)//round to 2 decimal
+                }
+              }
+            },
+          },
+          chartOptions_v1_t: {
+            labels: [], // add for keywords
+            chart: {
+              type: 'bar',
+              height: 440,
+              stacked: true,
+              events: {
+              click: function(event, chartContext, config) {
+                // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts
+                console.log('hw');
+              }
+            }
+            },
+            colors: ['#008FFB'],
+            plotOptions: {
+              bar: {
+                horizontal: true,
+                barHeight: '80%',
+              },
+            },
+            dataLabels: {
+              enabled: true,
+              textAnchor: 'start',
+              style: {
+                  colors: ['#fff']
+              },
+              offsetX: 0,
+              formatter: function (val, opt) {
+                // console.log(opt.w.config.series[opt.seriesIndex]);
+                return opt.w.config.labels[opt.seriesIndex][opt.dataPointIndex] + ":  " + Math.abs(Math.round(val* 100) / 100)
+              },
+            },
+            
+            grid: {
+              xaxis: {
+                lines: {
+                  show: false
+                }
+              }
+            },
+            yaxis: {
+              title: {
+                text: 'Keywords',
+              },
+              labels: {
+                show: false
+              }
+            },
+            tooltip: {
+              theme: "dark",
+              x: {
+                  formatter: function (val, opt) {
+                    return opt.w.config.labels[opt.seriesIndex][opt.dataPointIndex]
+                }
+              },
+              y: {
+                title: {
+                  formatter: function (val) {
+                  return Math.abs(Math.round(val* 100) / 100)
+                  }
+                }
+              }
+              
+              // shared: false,
+              // x: {
+              //   formatter: function (val, opt) {
+              //     return opt.w.config.labels[opt.seriesIndex][opt.dataPointIndex]
+              //   }
+              // },
+              // y: {
+              //   formatter: function (val) {
+              //     return "Keyword score: " + Math.abs(Math.round(val* 100) / 100)
+              //   }
+              // }
+            },
+            title: {
+              text: 'Extracted keywords, ranked by the keyword scores (teacher)',
+        align: "center",
+        floating: true
+            },
+            xaxis: {
+              categories: ['Keywords'],
+              title: {
+                text: 'Keyword Score'
+              },
+
+              min: 0,
               max: 1,
               labels: {
                 formatter: function (val) {

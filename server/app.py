@@ -340,7 +340,7 @@ def predict():
     data = request.get_json()
     print("[/predictions] prediction request received: ", data)
     if request.method =='POST':
-        p = Pipeline(data, '/Users/zhaorui/work/cmad/raw_data/','/Users/zhaorui/work/cmad/processed_data/') ### TO CHANGE in production: absolute path
+        p = Pipeline(data, '/Users/zhaorui/work/cmad2.0/raw_data/','/Users/zhaorui/work/cmad2.0/processed_data/') ### TO CHANGE in production: absolute path
         p.train(True)
         p.enroll()
         df_res = p.predict(eval=False, gtp=[])
@@ -440,7 +440,7 @@ def compute_p1():
         rq = {'filename':filename, 'sessionId':sessionId, 'stopwords':stoplist, 'numOfKeywords':numOfKeywords, 'interval':interval, 'no_bins':no_bins}
 
 
-        infolder = '/Users/zhaorui/work/cmad/processed_data/annotations/'
+        infolder = '/Users/zhaorui/work/cmad2.0/processed_data/annotations/'
         proc1 = Proc1(rq, infolder)
         res = proc1.main()
         print(res)
