@@ -204,7 +204,7 @@ export default {
             }
         },
 
-annotateT(){
+        annotateT(){
             var btnT = document.getElementById("marker-teacher");
             var btnS = document.getElementById("marker-student");
             var btnO = document.getElementById("marker-other");
@@ -495,7 +495,6 @@ annotateT(){
                 });
             
         },
-
 
         onSubmit() {
             console.log('[Page 1] submit button pressed, annotation length', Object.keys(this.savedAnnos).length);

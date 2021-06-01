@@ -11,20 +11,23 @@
         <b-row align-h='center'>
           <p>
             <strong>Session ID:</strong> {{ this.$globals.sessionId }} <br>
-            <strong>Video:</strong> {{ this.selectedVideo }} <br>
+            <strong>Video:</strong> {{ this.$globals.file }} <br>
           </p>
         </b-row>
         <hr class="my-4">
 
         <div align-h='center'>
+          <b-container class="my-4">
+            <b-row>
+                <b-col class="text-right align-bottom" cols="6"> Analyzing the period starting from (seconds): </b-col>
+                <b-col class="float-left" cols="4"><b-form-select v-model="view_period" @change="onPeriodSelectorChange($event)" :options="periods" value-field="name" 
+                  text-field="name" size="md"></b-form-select></b-col>
+                  <b-col cols="2"></b-col>
+            </b-row>
+          </b-container>
+          
           <b-card no-body >
-            <b-container class="my-2">
-              <b-row>
-              <b-col cols="6"> Select a period</b-col>
-              <b-col cols="4"><b-form-select v-model="view_period" @change="onPeriodSelectorChange($event)" :options="periods" value-field="name"
-                text-field="name" size="md"></b-form-select></b-col>
-              <b-col cols="2"></b-col>
-              </b-row>
+            <b-container >
                 
               
             </b-container>
@@ -132,34 +135,13 @@ export default {
             }
           }
         },
-      onSubmit(){
 
-      },
       onPeriodSelectorChange:function(value){
         this.view_period = value;
         console.log('[Page 6] selected period',this.view_period); 
         this.updateViz();
-        // this.updateChart();
-
-          // evt.preventDefault();
-          // to save current auto-generated ids to the server
-          // const file = {
-          //   filename: value                        
-          // }; 
-
-          // const path = 'http://localhost:5000/api/file';
-          // axios.post(path, file)
-          //   .then(() => {
-          //     this.showMessage = true;
-          //   })
-          //   .catch((error) => {
-          //     // eslint-disable-next-line
-          //     console.log(error);
-          //   });
-
-          // // this.initForm();
-          // console.log('[Page 0] File switched to ', value); 
       },
+
       updateViz(){
 
         this.series_v1_s = [
@@ -181,46 +163,11 @@ export default {
         this.chartOptions_v1_t = {
          labels: [this.teacher_segs[this.view_period][0]]
         }
-
-        // this.$refs.realtimeChart.updateSeries(this.series_v1, false, true);
-        // this.series_v1[0].data = this.students_segs[this.view_period][1];
-        // this.series_v1[0].labels = this.students_segs[this.view_period][0];
-        // this.series_v1[1].data = this.teacher_segs[this.view_period][1];
-        // this.series_v1[1].labels = this.teacher_segs[this.view_period][0];
-        console.log(this.series_v1_s);//
-        console.log(this.series_v1_t);//
-
-        // var chart = new ApexCharts(document.querySelector("#chart_v1"), this.chartOptions_v1);
-        // chart.render();
-
+        console.log(this.series_v1_s);
+        console.log(this.series_v1_t);
       }
-      // updateChart() {
-      //   const max = 90;
-      //   const min = 20;
-      //   const newData = this.series_v1[0].data.map(() => {
-      //     return Math.floor(Math.random() * (max - min + 1)) + min
-      //   })
-      //   // In the same way, update the series option
-      //   this.series_v1 = [{
-      //     data: newData
-      //   }];
+      
 
-      // }
-    },
-    beforeCreate(){
-
-
-      // var categories = [];
-      // for(var i = 0, len = num_keywords; i < len; i++){
-      //   var j = i+1;
-      //   categories.push("Keyword #"+j);
-      // }
-      // this.chartOptions_v1 = {
-      //  xaxis: {
-      //    categories: categories
-      //  }
-      // }
-      // console.log(this.chartOptions_v1.xaxis.categories);
     },
 
     created(){
@@ -236,41 +183,12 @@ export default {
       var num_keywords =  this.analyses_res.config.num_keywords;
       this.periods = Object.keys(this.students_segs); // TODO: assuming both sides have the same number of periods, even with empty keyword data
       this.view_period = this.periods[0]; // use timestamp in seconds as index
-      this.updateViz();
-      // console.log(this.periods);      
-      // console.log(this.students_segs[this.view_period]);
-      // console.log(num_periods);
-      // console.log(this.series_v1_s);
-      // var cell_color = {'T':'primary','S':'success'};
-      // if (this.preds.hasOwnProperty('preds')) {
-      //   let pp = this.preds.preds;
-      //   this.n_preds = Object.keys(this.preds.preds).length;
-      //   this.n_total_segs = this.n_total_segs + this.n_preds;
-      //   for (var idx in pp) {
-      //     if (pp[idx]['Pred']=='T') {
-      //       this.n_t_segs+=1;
-      //     }else{
-      //       this.n_s_segs+=1;
-      //     }
-
-      //     this.deltas.push(pp[idx]['Delta']);
-      //     this.table_items.push({
-      //       start_timestamp: pp[idx]['File'],
-      //       type: 'Prediction',
-      //       delta: pp[idx]['Delta'].toFixed(3),
-      //       speaker: pp[idx]['Pred'],
-      //       _cellVariants: { speaker: cell_color[pp[idx]['Pred']] }
-      //     });
-      //   }
-      // }
-      // console.log(this.table_items);
-      // console.log(this.deltas);
-      // console.log(this.n_total_segs);
+      // this.updateViz();
 
     },
 
     mounted(){
-
+      this.updateViz();
 
     },
 
@@ -279,7 +197,6 @@ export default {
           analyses_res:null,
           students_segs:[],
           teacher_segs:[],
-          selectedVideo:null,
           // table_items:null,
           periods:[], // available periods
           view_period:null, // the period that is currently displayed

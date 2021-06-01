@@ -20,9 +20,7 @@ class Proc1(object):
     """docstring for Proc1"""
     def __init__(self, rq, infolder):
         self.infolder = infolder
-        # self.outfolder = outfolder
-        self.filename, self.sessionId, self.stopwords, self.numOfKeywords, self.interval, self.no_bins = self.get_request(rq)
-        
+        self.rq = rq
     
     def get_request(self, rq):
         rq_dict = rq
@@ -33,12 +31,11 @@ class Proc1(object):
         stopwords = rq_dict['stopwords']
         numOfKeywords = rq_dict['numOfKeywords']
         interval = rq_dict['interval']
-        no_bins = rq_dict['no_bins']
         # max_ngram_size = 3
 
         print('****** [Proc1] received post data', rq_dict)
 
-        return filename, sessionId, stopwords, numOfKeywords, interval, no_bins
+        return filename, sessionId, stopwords, numOfKeywords, interval
 
     def parse_annos(self, infolder, filename):
         with open(infolder+filename+'_annos.pickle','rb') as f: # TO CHANGE: absolute path when in production
@@ -71,6 +68,7 @@ class Proc1(object):
             subs = f.readlines()
         
         subs_dict = {}
+        last_tp = 0.0
         for sub in subs[1:]: # TO CHANGE to include first line if necessary
             tp,txt = sub.strip().split('\t')
             tp_hr = float(datetime.strptime(tp,'%H:%M:%S').hour)    
@@ -79,7 +77,7 @@ class Proc1(object):
             tp_s = tp_hr*3600+tp_min*60+tp_sec 
             # print(tp_s, txt)
             subs_dict[tp_s] = txt
-        # print(subs_dict)
+            last_tp = tp_s
 
         dtas = []
         for tp, txt in subs_dict.items():
@@ -94,11 +92,13 @@ class Proc1(object):
         df['End'] = df['Start'].shift(-1)
         df['Start'] = df['Start']+0.001 # TODO: address the last row
 
-        return df
+        return df, last_tp
 
 
-    def crop_on_interval(self, annos, no_bins, interval):
-        count = 0
+    def crop_on_interval(self, annos, last_tp, interval):
+        no_bins = int(last_tp // interval + 1)
+        # print(range(0, 30*interval, interval))
+        # print(no_bins)
         bins = list(range(0, no_bins*interval, interval))
         annos['bin'] = pd.cut(annos['End'], bins)
         # bins = list(df.bin.unique())
@@ -139,13 +139,6 @@ class Proc1(object):
                                                      features=None,\
                                                      stopwords=stopwords)
                 tea_keywords = kw_extractor.extract_keywords(tea_texts)
-                # print(stu_keywords)
-                # print(tea_keywords)
-
-                # keywords['S'][(interval.left,interval.right)] = stu_keywords # not used
-                # keywords['T'][(interval.left,interval.right)] = tea_keywords # not used     
-                # keywords['S'][float(interval.left)] = stu_keywords
-                # keywords['T'][float(interval.left)] = tea_keywords
                 keywords['S'][float(interval.left)] = [[k for k,v in stu_keywords][::-1], [v.round(3) for k,v in stu_keywords][::-1]]
                 keywords['T'][float(interval.left)] = [[k for k,v in tea_keywords][::-1], [v.round(3) for k,v in tea_keywords][::-1]]
 
@@ -154,23 +147,12 @@ class Proc1(object):
 
 
         return keywords
-        # with open(self.filename+'/'+str(interval)+'_proc1'+'.txt','w') as f: # TO CHANGE: absolute path when in production, use JSON to output
-        #     f.write('Time interval %s\n'%interval)
-        #     f.write('In total %d posts\n'%len(ids))
-        #     f.write('=====================\n')
-        #     f.write('Student keywords: \n')
-        #     f.write('---------------------\n')
-        #     for kw in stu_keywords:
-        #         f.write('%s: %.3f\n'%(kw[0],kw[1]))
-        #     f.write('---------------------\n')
-        #     f.write('Teacher keywords: \n')
-        #     f.write('---------------------\n')
-        #     for kw in tea_keywords:
-        #         f.write('%s: %.3f\n'%(kw[0],kw[1]))
+
 
     def main(self):
-        self.annos = self.parse_annos(self.infolder, self.filename)
-        binned_df = self.crop_on_interval(self.annos, self.no_bins, self.interval)
+        self.filename, self.sessionId, self.stopwords, self.numOfKeywords, self.interval = self.get_request(self.rq)
+        self.annos, last_tp = self.parse_annos(self.infolder, self.filename)
+        binned_df = self.crop_on_interval(self.annos, last_tp, self.interval)
         # print(binned_df.keys())
         return self.extract(binned_df, self.numOfKeywords, self.stopwords)
 

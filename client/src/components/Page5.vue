@@ -42,7 +42,6 @@
                   <b-form-textarea
                     id="input-1"
                     v-model="stopwords"
-                    placeholder="sometimes, much, other, whereas, don, also, name, a, mill, find, now, it, see, get, many, without, seeming, against, again, several, am, their, couldnt, doesn, an, ltd, nobody, look, behind, uh, amongst, enough, everywhere, must, us, keep, interest, than, was, co, will, has, me, where, above, down, any, eleven, hers, don't, below, please, at, you, does, very, out, by, would, his, yep, un, were, both, ever, part, back, yourself, beyond, made, however, since, these, serious, together, either, around, every, along, somewhere, ours, moreover, while, wouldn, therein, first, cannot, which, all, didn, whose, whoever, well, anyhow, becomes, them, sincere, through, indeed, anywhere, formerly, before, use, last, our, after, because, then, is, what, until, during, go, afterwards, elsewhere, been, had, if, de, she, within, as, whom, cry, and, some, how, thus, already, ok, nowhere, so, seem, him, um, thanks, he, put, one, of, didn't, anything, won, the, each, re, themselves, that, etc, too, no, who, least, under, call, being, few, yours, hereafter, into, second, they, have, eh, move, to, can, thereby, beside, among, alone, could, whence, might, front, upon, herself, your, namely, whereupon, everything, only, whereby, rather, never, her, yourselves, more, another, hasnt, always, take, may, third, mine, with, found, top, former, meanwhile, but, neither, whether, said, here, such, con, seemed, do, give, becoming, inc, whenever, ourselves, although, everyone, whole, my, anyway, throughout, same, others, beforehand, on, hereby, wherein, onto, someone, for, next, myself, yet, per, are, be, okay, yes, this, due, whereafter, over, say, latterly, inaudible, almost, noone, able, need, nothing, not, when, thence, we, seems, besides, amoungst, its, whither, became, none, across, ll, though, ya, did, or, nevertheless, once, herein, bit, thank, perhaps, ie, up, towards, mostly, thereafter, eg, wherever, off, therefore, except, still, hereupon, often, there, yeah, i, latter, between, own, hence, try, toward, just, himself, should, thereupon, forty, amount, somehow, sometime, from, else, done, thru, most, about, less, otherwise, whatever, nor, eight, in, something, those, why, via, itself, become, anyone, fill, cant, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0"
                     rows="3"
                     max-rows="100"
                   ></b-form-textarea>
@@ -52,7 +51,6 @@
                   <b-form-input
                     id="input-2"
                     v-model="timeinterval"
-                    placeholder="Time interval"
                   ></b-form-input>
                 </b-form-group>
 
@@ -92,7 +90,6 @@
                   <b-form-textarea
                     id="input-1"
                     v-model="stopwords"
-                    placeholder="sometimes, much, other, whereas, don, also, name, a, mill, find, now, it, see, get, many, without, seeming, against, again, several, am, their, couldnt, doesn, an, ltd, nobody, look, behind, uh, amongst, enough, everywhere, must, us, keep, interest, than, was, co, will, has, me, where, above, down, any, eleven, hers, don't, below, please, at, you, does, very, out, by, would, his, yep, un, were, both, ever, part, back, yourself, beyond, made, however, since, these, serious, together, either, around, every, along, somewhere, ours, moreover, while, wouldn, therein, first, cannot, which, all, didn, whose, whoever, well, anyhow, becomes, them, sincere, through, indeed, anywhere, formerly, before, use, last, our, after, because, then, is, what, until, during, go, afterwards, elsewhere, been, had, if, de, she, within, as, whom, cry, and, some, how, thus, already, ok, nowhere, so, seem, him, um, thanks, he, put, one, of, didn't, anything, won, the, each, re, themselves, that, etc, too, no, who, least, under, call, being, few, yours, hereafter, into, second, they, have, eh, move, to, can, thereby, beside, among, alone, could, whence, might, front, upon, herself, your, namely, whereupon, everything, only, whereby, rather, never, her, yourselves, more, another, hasnt, always, take, may, third, mine, with, found, top, former, meanwhile, but, neither, whether, said, here, such, con, seemed, do, give, becoming, inc, whenever, ourselves, although, everyone, whole, my, anyway, throughout, same, others, beforehand, on, hereby, wherein, onto, someone, for, next, myself, yet, per, are, be, okay, yes, this, due, whereafter, over, say, latterly, inaudible, almost, noone, able, need, nothing, not, when, thence, we, seems, besides, amoungst, its, whither, became, none, across, ll, though, ya, did, or, nevertheless, once, herein, bit, thank, perhaps, ie, up, towards, mostly, thereafter, eg, wherever, off, therefore, except, still, hereupon, often, there, yeah, i, latter, between, own, hence, try, toward, just, himself, should, thereupon, forty, amount, somehow, sometime, from, else, done, thru, most, about, less, otherwise, whatever, nor, eight, in, something, those, why, via, itself, become, anyone, fill, cant, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0"
                     rows="3"
                     max-rows="100"
                   ></b-form-textarea>
@@ -238,8 +235,12 @@ export default {
       onSubmitP1(){
         const info = {
             sessionId: this.$globals.sessionId,
-            filename: this.$globals.file
+            filename: this.$globals.file,
+            stopwords: this.stopwords,
+            interval: this.timeinterval,
+            numOfKeywords: this.numkeyword
         };
+        console.log(info);
         const path = 'http://localhost:5000/api/p1analyses';
                   axios.post(path, info)
                     .then((res) => { 
@@ -320,8 +321,8 @@ export default {
             timeinterval:300,
             numkeyword:20,
 
-            stopwords:'',
-            selectedmode:'',
+            stopwords:"sometimes, much, other, whereas, don, also, name, a, mill, find, now, it, see, get, many, without, seeming, against, again, several, am, their, couldnt, doesn, an, ltd, nobody, look, behind, uh, amongst, enough, everywhere, must, us, keep, interest, than, was, co, will, has, me, where, above, down, any, eleven, hers, don't, below, please, at, you, does, very, out, by, would, his, yep, un, were, both, ever, part, back, yourself, beyond, made, however, since, these, serious, together, either, around, every, along, somewhere, ours, moreover, while, wouldn, therein, first, cannot, which, all, didn, whose, whoever, well, anyhow, becomes, them, sincere, through, indeed, anywhere, formerly, before, use, last, our, after, because, then, is, what, until, during, go, afterwards, elsewhere, been, had, if, de, she, within, as, whom, cry, and, some, how, thus, already, ok, nowhere, so, seem, him, um, thanks, he, put, one, of, didn't, anything, won, the, each, re, themselves, that, etc, too, no, who, least, under, call, being, few, yours, hereafter, into, second, they, have, eh, move, to, can, thereby, beside, among, alone, could, whence, might, front, upon, herself, your, namely, whereupon, everything, only, whereby, rather, never, her, yourselves, more, another, hasnt, always, take, may, third, mine, with, found, top, former, meanwhile, but, neither, whether, said, here, such, con, seemed, do, give, becoming, inc, whenever, ourselves, although, everyone, whole, my, anyway, throughout, same, others, beforehand, on, hereby, wherein, onto, someone, for, next, myself, yet, per, are, be, okay, yes, this, due, whereafter, over, say, latterly, inaudible, almost, noone, able, need, nothing, not, when, thence, we, seems, besides, amoungst, its, whither, became, none, across, ll, though, ya, did, or, nevertheless, once, herein, bit, thank, perhaps, ie, up, towards, mostly, thereafter, eg, wherever, off, therefore, except, still, hereupon, often, there, yeah, i, latter, between, own, hence, try, toward, just, himself, should, thereupon, forty, amount, somehow, sometime, from, else, done, thru, most, about, less, otherwise, whatever, nor, eight, in, something, those, why, via, itself, become, anyone, fill, cant, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0",
+            selectedmode:'',/// not in use
             modes: [
               { item: 'A', name: 'Proc A' },
               { item: 'B', name: 'Proc B' },

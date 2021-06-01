@@ -28,30 +28,33 @@
 
         <b-container id='vid-select' style="display: none">
           
-          <b-row align-h="center">
-            <b-col cols="6">
-                <p><strong>Please select a video to start</strong></p>
-                <b-row style="width:600px; " align-v="end">
-                  <b-col cols="8" >
-                    <!-- <b-form-select v-model="selectedVideo" @change="onChange($event)" :options="files" size="md"></b-form-select> -->
+          <b-row class='my-4'>
+                <b-col cols="8">
+                  <p><strong>Please select a video to start</strong></p>
+                </b-col>
+                <b-col cols="4" style="width:600px;">
                     <b-form-select v-model="selectedVideo" @change="onVidSelectorChange($event)" :options="courses" value-field="name"
                     text-field="name" size="md"></b-form-select>
-                    
                   </b-col>
-                  <b-col cols="4" >
-                      <b-button variant='primary'>                
-                          <router-link to="/Page1" id="next-page-sel" @click.native="switch2Tab(1); retreiveHistoryPredictions();" style="color:#fff">
-                              Annotate
-                          </router-link>
-                          <router-link to="/Page5" id="next-page-sel" @click.native="switch2Tab(5); retreiveHistoryPredictions();" style="color:#fff">
-                              Analyze
-                          </router-link>
-                      </b-button>
-                    
-                  </b-col>
-                </b-row>
-            </b-col>
+              
           </b-row>
+            
+          <b-row class='my-4'>
+            <b-col cols="3" >
+              <b-button variant='primary'>                
+                <router-link to="/Page1" id="next-page-sel" @click.native="switch2Tab(1); retreiveHistoryPredictions();" style="color:#fff">
+                              Annotate
+                </router-link>
+              </b-button>
+            </b-col>
+            <b-col cols="3" >
+              <b-button variant='primary' @click="checkAnnotationFile();" style="color:#fff">
+                              Analyze
+              </b-button>                
+
+            </b-col>
+        </b-row>
+        
         </b-container>
       </b-jumbotron>
     </b-container>
@@ -98,7 +101,7 @@ export default {
     },
 
     methods: {
-    showMsgBoxTwo() {
+    loginMsg() {
         this.boxTwo = ''
         var message = null;
         var ty = null;
@@ -129,6 +132,38 @@ export default {
           })
       },
 
+      annoNotFoundToast(append = false) {
+        this.toastCount++
+        this.$bvToast.toast('No annotation file found for this video', {
+            title: 'Annotations Not Found',
+            autoHideDelay: 5000,
+            appendToast: append,
+            variant: 'danger',
+        });    
+      },
+
+      checkAnnotationFile(){
+        const info = {
+            filename: this.$globals.file
+        };
+        console.log(info);
+        const path = 'http://localhost:5000/api/historyAnnotation';
+                  axios.post(path, info)
+                    .then((res) => { 
+                        var found = res.data.found;
+                        console.log('Found: '+res.data.found);
+                        if (found==1) {
+                          this.switch2Tab(5);
+                          this.$router.push('/Page5');
+                        }else{
+                          this.annoNotFoundToast(true);
+                        }
+                    })
+                    .catch((error) => {
+                      // eslint-disable-next-line
+                      console.log(error);
+                    });
+      },
 
       onVidSelectorChange:function(value){
          this.$globals.file = value;
@@ -155,17 +190,17 @@ export default {
       },
 
       switch2Tab(selected){
-              console.log('[Page 0] Directed to [Page '+selected+']');
-              var tabs = document.getElementById("header").getElementsByTagName("span");
-              for (var i = 0; i < tabs.length; i++) {
-                var tab = tabs[i];
-                if (i==selected) {
-                  tab.classList.add('tab-selected');
-                }else{
-                  tab.classList.remove('tab-selected');
-                }
-              }
-            },
+        console.log('[Page 0] Directed to [Page '+selected+']');
+        var tabs = document.getElementById("header").getElementsByTagName("span");
+        for (var i = 0; i < tabs.length; i++) {
+          var tab = tabs[i];
+          if (i==selected) {
+            tab.classList.add('tab-selected');
+          }else{
+            tab.classList.remove('tab-selected');
+          }
+        }
+      },
 
 
       initServerGlobals(){
@@ -275,7 +310,7 @@ export default {
                 }else{
                   console.log('[Page 0] ID Not found');
                 }
-                this.showMsgBoxTwo();
+                this.loginMsg();
 
               })
               .catch((error) => {
@@ -365,6 +400,7 @@ export default {
 
             boxTwo: null,
             box3:null,
+            toastCount: 0,
 
             courses: null,
 
