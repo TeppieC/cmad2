@@ -14,6 +14,8 @@ sys.path.append('../model_T1/src/sidekit')
 sys.path.append('../model_T2/src')
 from pipeline import Pipeline
 from Proc1 import Proc1
+from Proc2 import Proc2
+from Proc3 import Proc3
 import pickle
 from flask import current_app
 from markupsafe import escape
@@ -377,69 +379,6 @@ def compute_p1():
     rq = request.get_json()
     print("[/predictions] prediction request received: ", rq)
     if request.method =='POST':
-        # rq_dict = {'filename':filename, 'sessionId':sessionId, 'stopwords':stoplist, 'numOfKeywords':numOfKeywords, 'interval':interval, 'no_bins':no_bins}
-
-        # ENGLISH_STOP_WORDS = frozenset([
-        #     "thank", "use","need", 'll', # this is 'll
-        #     "does","doesn","one","say","try","didn","said", 'bit', 'inaudible',
-        #     "thanks", "use","need", "don","wouldn","won","able","just",
-        #     "a", "about", "above", "across", "after", "afterwards", "again", "against",
-        #     "all", "almost", "alone", "along", "already", "also", "although", "always",
-        #     "any", "anyhow", "anyone", "anything", "anyway", "anywhere", "are", 
-        #     "use","look","a", "about", "above", "across", "after", "afterwards", "again", "against",
-        #     "all", "almost", "alone", "along", "already", "also", "although", "always",
-        #     "am", "among", "amongst", "amoungst", "amount", "an", "another",
-        #     "any", "anyhow", "anyone", "anything", "anyway", "anywhere", "are",
-        #     "around", "as", "at", "back", "be", "became", "because", "become",
-        #     "becomes", "becoming", "been", "before", "beforehand", "behind", "being",
-        #     "below", "beside", "besides", "between", "beyond", "both",
-        #     "but", "by", "call", "can", "cannot", "cant", "co", "con",
-        #     "could", "couldnt", "cry", "de", "do", "done", "don't","didn't","don","did",
-        #     "down", "due", "during", "each", "eg", "eight", "either", "eleven", "else",
-        #     "elsewhere", "enough", "etc", "ever", "every", "everyone",
-        #     "everything", "everywhere", "except", "few", "fill",
-        #     "find", "for", "former", "formerly", "forty","just",
-        #     "found", "from", "front", "get", "give", "go",
-        #     "had", "has", "hasnt", "have", "he", "hence", "her", "here", "hereafter",
-        #     "hereby", "herein", "hereupon", "hers", "herself", "him", "himself", "his",
-        #     "how", "however", "i", "ie", "if", "in", "inc", "indeed",
-        #     "interest", "into", "is", "it", "its", "itself", "keep", "last", "latter",
-        #     "latterly", "least", "less", "ltd", "made", "many", "may", "me",
-        #     "meanwhile", "might", "mill", "mine", "more", "moreover", "most", "mostly",
-        #     "move", "much", "must", "my", "myself", "name", "namely", "neither",
-        #     "never", "nevertheless", "next", "no", "nobody", "none", "noone",
-        #     "nor", "not", "nothing", "now", "nowhere", "of", "off", "often", "on","ok","okay",
-        #     "once", "only", "onto", "other", "others", "otherwise", "our", 'or','and',
-        #     "ours", "ourselves", "out", "over", "own", "part", "per", "perhaps",
-        #     "please", "put", "rather", "re", "same", "see", "seem", "seemed",
-        #     "seeming", "seems", "serious", "several", "she", "should",
-        #     "since", "sincere", "so", "some", "somehow", "someone",
-        #     "something", "sometime", "sometimes", "somewhere", "still", "such",
-        #     "take", "than", "that", "the", "their", "them", "first","second",
-        #     "themselves", "then", "thence", "there", "thereafter", "thereby",
-        #     "therefore", "therein", "thereupon", "these", "they", 
-        #     "third", "this", "those", "though", "through", "throughout",
-        #     "thru", "thus", "to", "together", "too", "top", "toward", "towards",
-        #     "un", "under", "until", "up", "upon", "us", "um","uh","eh",
-        #     "very", "via", "was", "we", "well", "were", "what", "whatever", "when",
-        #     "whence", "whenever", "where", "whereafter", "whereas", "whereby",
-        #     "wherein", "whereupon", "wherever", "whether", "which", "while", "whither",
-        #     "who", "whoever", "whole", "whom", "whose", "why", "will", "with",
-        #     "within", "without", "would", "yet", "you", "your", "yours", "yourself",
-        #     "yourselves","yes","yeah",'ya',"yep"])
-        # ENGLISH_STOP_WORDS = list(ENGLISH_STOP_WORDS)
-        # import string
-
-        # ENGLISH_STOP_WORDS = ENGLISH_STOP_WORDS+list(string.ascii_lowercase)
-        # stoplist = ENGLISH_STOP_WORDS+list('1234567890')
-        # sessionId = 1111
-        # numOfKeywords = 20
-        # interval = 300
-        # no_bins = 30
-        # filename = 'JP4'
-
-        # rq = {'filename':filename, 'sessionId':sessionId, 'stopwords':stoplist, 'numOfKeywords':numOfKeywords, 'interval':interval, 'no_bins':no_bins}
-        rq['no_bins'] = 30
 
         infolder = '/Users/zhaorui/work/cmad2.0/processed_data/annotations/'
         proc1 = Proc1(rq, infolder)
@@ -447,7 +386,46 @@ def compute_p1():
         print(res)
 
         response_object['result'] = res
-        # {'S': {(2400, 2700): [('write number two', 0.03967149495968096), ('number two', 0.11188876046331633), ...], other_intervals:[], other_intervals:[]}}
+
+    return jsonify(response_object)
+
+@app.route('/api/p2analyses', methods=['POST'])
+# @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+# @crossdomain(origin='*')
+def compute_p2():
+    response_object = {'status': 'success'}
+
+
+    rq = request.get_json()
+    print("[/predictions] prediction request received: ", rq)
+    if request.method =='POST':
+
+        infolder = '/Users/zhaorui/work/cmad2.0/processed_data/annotations/'
+        proc2 = Proc2(rq, infolder)
+        res = proc2.main()
+        print(res)
+
+        response_object['result'] = res
+
+    return jsonify(response_object)
+
+@app.route('/api/p3analyses', methods=['POST'])
+# @cross_origin(origin='localhost',headers=['Content- Type','Authorization'])
+# @crossdomain(origin='*')
+def compute_p3():
+    response_object = {'status': 'success'}
+
+
+    rq = request.get_json()
+    print("[/predictions] prediction request received: ", rq)
+    if request.method =='POST':
+
+        infolder = '/Users/zhaorui/work/cmad2.0/processed_data/annotations/'
+        proc3 = Proc3(rq, infolder, '/Users/zhaorui/work/cmad2.0/model_T2/src/vocabs/tier23_np.pickle')
+        res = proc3.main()
+        print(res)
+
+        response_object['result'] = res
 
     return jsonify(response_object)
 

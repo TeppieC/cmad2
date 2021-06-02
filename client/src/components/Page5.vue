@@ -38,26 +38,26 @@
                 </b-form-group>
  -->
 
-                <b-form-group id="input-group-1" label="Stopwords (words that should not be considered):" label-for="input-1">
+                <b-form-group label="Stopwords (words that should not be considered):" label-for="input-1-1">
                   <b-form-textarea
-                    id="input-1"
+                    id="input-1-1"
                     v-model="stopwords"
                     rows="3"
                     max-rows="100"
                   ></b-form-textarea>
                 </b-form-group>
 
-                <b-form-group id="input-group-2" label="Desired time interval (s):" label-for="input-2">
+                <b-form-group label="Desired time interval (s):" label-for="input-1-2">
                   <b-form-input
-                    id="input-2"
+                    id="input-1-2"
                     v-model="timeinterval"
                   ></b-form-input>
                 </b-form-group>
 
 
-                <b-form-group id="input-group-3" label="Number of keywords:" label-for="input-3">
+                <b-form-group label="Number of keywords:" label-for="input-1-3">
                   <b-form-spinbutton 
-                    id="input-3" 
+                    id="input-1-3" 
                     v-model="numkeyword" 
                     min="1" 
                     max="100">
@@ -73,40 +73,28 @@
 
             <b-tab title="Procedure 2">
               <b-form v-on:submit.prevent="onSubmitP2" v-if="show">
-<!--                 <b-form-group id="input-group-0" label="Analysis procedure:" label-for="input-0">
-                  <b-form-radio-group
-                    id="input-0"
-                    v-model="selectedmode"
-                    :options="modes"
-                    class="mb-3"
-                    value-field="item"
-                    text-field="name"
-                    disabled-field="notEnabled"
-                  ></b-form-radio-group>
-                </b-form-group>
- -->
 
-                <b-form-group id="input-group-1" label="Stopwords (words that should not be considered):" label-for="input-1">
+                <b-form-group label="Stopwords (words that should not be considered):" label-for="input-2-1">
                   <b-form-textarea
-                    id="input-1"
+                    id="input-2-1"
                     v-model="stopwords"
                     rows="3"
                     max-rows="100"
                   ></b-form-textarea>
                 </b-form-group>
 
-                <b-form-group id="input-group-2" label="Desired time interval (s):" label-for="input-2">
+                <b-form-group label="Desired time interval (s):" label-for="input-2-2">
                   <b-form-input
-                    id="input-2"
+                    id="input-2-2"
                     v-model="timeinterval"
                     placeholder="Time interval"
                   ></b-form-input>
                 </b-form-group>
 
 
-                <b-form-group id="input-group-3" label="Number of keywords:" label-for="input-3">
+                <b-form-group label="Number of keywords:" label-for="input-2-3">
                   <b-form-spinbutton 
-                    id="input-3" 
+                    id="input-2-3" 
                     v-model="numkeyword" 
                     min="1" 
                     max="100">
@@ -144,28 +132,27 @@
                 </b-form-group>
  -->
 
-                <b-form-group id="input-group-1" label="Stopwords (words that should not be considered):" label-for="input-1">
-                  <b-form-textarea
-                    id="input-1"
-                    v-model="stopwords"
-                    placeholder="sometimes, much, other, whereas, don, also, name, a, mill, find, now, it, see, get, many, without, seeming, against, again, several, am, their, couldnt, doesn, an, ltd, nobody, look, behind, uh, amongst, enough, everywhere, must, us, keep, interest, than, was, co, will, has, me, where, above, down, any, eleven, hers, don't, below, please, at, you, does, very, out, by, would, his, yep, un, were, both, ever, part, back, yourself, beyond, made, however, since, these, serious, together, either, around, every, along, somewhere, ours, moreover, while, wouldn, therein, first, cannot, which, all, didn, whose, whoever, well, anyhow, becomes, them, sincere, through, indeed, anywhere, formerly, before, use, last, our, after, because, then, is, what, until, during, go, afterwards, elsewhere, been, had, if, de, she, within, as, whom, cry, and, some, how, thus, already, ok, nowhere, so, seem, him, um, thanks, he, put, one, of, didn't, anything, won, the, each, re, themselves, that, etc, too, no, who, least, under, call, being, few, yours, hereafter, into, second, they, have, eh, move, to, can, thereby, beside, among, alone, could, whence, might, front, upon, herself, your, namely, whereupon, everything, only, whereby, rather, never, her, yourselves, more, another, hasnt, always, take, may, third, mine, with, found, top, former, meanwhile, but, neither, whether, said, here, such, con, seemed, do, give, becoming, inc, whenever, ourselves, although, everyone, whole, my, anyway, throughout, same, others, beforehand, on, hereby, wherein, onto, someone, for, next, myself, yet, per, are, be, okay, yes, this, due, whereafter, over, say, latterly, inaudible, almost, noone, able, need, nothing, not, when, thence, we, seems, besides, amoungst, its, whither, became, none, across, ll, though, ya, did, or, nevertheless, once, herein, bit, thank, perhaps, ie, up, towards, mostly, thereafter, eg, wherever, off, therefore, except, still, hereupon, often, there, yeah, i, latter, between, own, hence, try, toward, just, himself, should, thereupon, forty, amount, somehow, sometime, from, else, done, thru, most, about, less, otherwise, whatever, nor, eight, in, something, those, why, via, itself, become, anyone, fill, cant, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0"
-                    rows="3"
-                    max-rows="100"
-                  ></b-form-textarea>
-                </b-form-group>
-
-                <b-form-group id="input-group-2" label="Desired time interval (s):" label-for="input-2">
+                 <b-form-group label="Desired time interval (s):" label-for="input-3-1">
                   <b-form-input
-                    id="input-2"
+                    id="input-3-1"
                     v-model="timeinterval"
-                    placeholder="Time interval"
                   ></b-form-input>
                 </b-form-group>
 
 
-                <b-form-group id="input-group-3" label="Number of keywords:" label-for="input-3">
+                <b-form-group label="Number of keywords:" label-for="input-3-2">
                   <b-form-spinbutton 
-                    id="input-3" 
+                    id="input-3-2" 
+                    v-model="numkeyword" 
+                    min="1" 
+                    max="100">
+                  </b-form-spinbutton>
+                </b-form-group>
+
+
+                <b-form-group label="Number of keywords:" label-for="input-3-3">
+                  <b-form-spinbutton 
+                    id="input-3-3" 
                     v-model="numkeyword" 
                     min="1" 
                     max="100">
@@ -238,7 +225,7 @@ export default {
             filename: this.$globals.file,
             stopwords: this.stopwords,
             interval: this.timeinterval,
-            numOfKeywords: this.numkeyword
+            numkeyword: this.numkeyword
         };
         console.log(info);
         const path = 'http://localhost:5000/api/p1analyses';
@@ -260,9 +247,12 @@ export default {
       onSubmitP2(){
         const info = {
             sessionId: this.$globals.sessionId,
-            filename: this.$globals.file
+            filename: this.$globals.file,
+            interval: this.timeinterval,
+            numkeyword: this.numkeyword,
+            allowedPos: this.selectedpostags
         };
-        const path = 'http://localhost:5000/api/p1analyses';
+        const path = 'http://localhost:5000/api/p2analyses';
                   axios.post(path, info)
                     .then((res) => { 
                         console.log("[Page 5] Analyses done");
@@ -281,9 +271,12 @@ export default {
       onSubmitP3(){
         const info = {
             sessionId: this.$globals.sessionId,
-            filename: this.$globals.file
+            filename: this.$globals.file,
+            interval: this.timeinterval,
+            numkeyword: this.numkeyword,
+            allowedPos: this.selectedpostags
         };
-        const path = 'http://localhost:5000/api/p1analyses';
+        const path = 'http://localhost:5000/api/p3analyses';
                   axios.post(path, info)
                     .then((res) => { 
                         console.log("[Page 5] Analyses done");
