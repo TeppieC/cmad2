@@ -18,7 +18,9 @@ import json
 
 
 class Proc2(object):
-    """docstring for Proc1"""
+    """
+        Procedure 2: Knowledge base keyword extractor using babelfy
+    """
     def __init__(self, rq, infolder, api_key):
         self.infolder = infolder
         self.rq = rq

@@ -149,16 +149,6 @@
                   </b-form-spinbutton>
                 </b-form-group>
 
-
-                <b-form-group label="Number of keywords:" label-for="input-3-3">
-                  <b-form-spinbutton 
-                    id="input-3-3" 
-                    v-model="numkeyword" 
-                    min="1" 
-                    max="100">
-                  </b-form-spinbutton>
-                </b-form-group>
-
                 <b-form-group
                   label="Accepted POS tags"
                   v-slot="{ ariaDescribedby }"
@@ -297,8 +287,6 @@ export default {
 
     created(){
       console.log("Session ID: "+this.$globals.sessionId);
-
-      
     },
 
     mounted(){

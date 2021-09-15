@@ -17,7 +17,9 @@ import spacy
 import string
 
 class Proc1(object):
-    """docstring for Proc1"""
+    """
+        Procedure 1: YAKE-based keyword extractor
+    """
     def __init__(self, rq, infolder):
         self.infolder = infolder
         self.rq = rq
@@ -29,7 +31,7 @@ class Proc1(object):
 
         filename = rq_dict['filename']
         stopwords = rq_dict['stopwords']
-        numOfKeywords = rq_dict['numOfKeywords']
+        numOfKeywords = rq_dict['numkeyword']
         interval = rq_dict['interval']
         # max_ngram_size = 3
 

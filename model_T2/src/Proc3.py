@@ -18,7 +18,7 @@ import json
 
 
 class Proc3(object):
-    """docstring for Proc1"""
+    """docstring for Proc3"""
     def __init__(self, rq, infolder, vocab):
         self.infolder = infolder
         self.rq = rq

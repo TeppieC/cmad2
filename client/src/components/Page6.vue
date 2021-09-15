@@ -1,9 +1,5 @@
 <template>
     <div>
-
-
-
-
       <b-container class="my-2">
         <!-- {{ this.preds }} -->
         <!-- {{ this.deltas }} -->
@@ -49,15 +45,19 @@
                         :options="chartOptions_v1_t" 
                         :series="series_v1_t"></apexchart>
                 </b-tab>
-                              <!-- <b-tab title="# occurence" active>
-                    <apexchart type="bar" height="440" :options="chartOptions" :series="series"></apexchart>
-                </b-tab>
-                              <b-tab title="# occurence" active>
-                    <apexchart type="bar" height="440" :options="chartOptions" :series="series"></apexchart>
-                </b-tab> -->
+                
+                <b-tab title="Co-occurence" active>
+
+                  <!-- <svg width="960" height="600"></svg> -->
+
+                    <!-- <v-col id="arc" /> -->
+
+                  <network :nodeList="nodes" :linkList="links"></network>
+                </b-tab> 
+
               </b-tabs>
 
-          <b-container id='kw_detail' style="display: none">
+          <b-container id='kw_detail'>
             <hr class="my-4">
             <b-row align-h="center">
               <b-col cols="6">
@@ -108,6 +108,8 @@ import axios from 'axios';
 import Vue from 'vue'
 import * as d3 from 'd3'
 import VueApexCharts from 'vue-apexcharts'
+import Network from "vue-network-d3";
+import json from './m.json'
 
 Vue.use(VueApexCharts)
 Vue.component('apexchart', VueApexCharts)
@@ -117,6 +119,7 @@ export default {
     
     components: {
       apexchart: VueApexCharts,
+      Network
     },
     
     props:{
@@ -163,12 +166,12 @@ export default {
         this.chartOptions_v1_t = {
          labels: [this.teacher_segs[this.view_period][0]]
         }
-        console.log(this.series_v1_s);
-        console.log(this.series_v1_t);
-      }
-      
-
+        // console.log(this.series_v1_s);
+        // console.log(this.series_v1_t);
+      },
+    
     },
+
 
     created(){
       // console.log("Session ID: "+this.$globals.sessionId);
@@ -184,12 +187,15 @@ export default {
       this.periods = Object.keys(this.students_segs); // TODO: assuming both sides have the same number of periods, even with empty keyword data
       this.view_period = this.periods[0]; // use timestamp in seconds as index
       // this.updateViz();
-
+      this.nodes = json.nodes;
+      this.links = json.links;
+      console.log(json);
+      console.log(this.nodes);
+      
     },
 
     mounted(){
       this.updateViz();
-
     },
 
     data () {
@@ -198,6 +204,10 @@ export default {
           students_segs:[],
           teacher_segs:[],
           // table_items:null,
+          network_data: json,
+          nodes: [],
+          links: [],
+
           periods:[], // available periods
           view_period:null, // the period that is currently displayed
           selected_kw: null, // the keyword selected to display details
@@ -222,19 +232,10 @@ export default {
               height: 440,
               stacked: true,
               events: {
-                // click: function(event, chartContext, config) {
-                //   // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts
-                //   console.log(config.config.series[config.dataPointIndex]);
-                //   var kd = document.getElementById("kw_detail");
-                //     if (this.selected_kw==null){
-                //       kd.style.display = 'none';
-                //     }else{
-                //       kd.style.display = 'block';
-                //   }
                 // },
                 dataPointSelection: function(event, chartContext, config) {
-                  console.log(config.dataPointIndex);
-                  console.log(config.w.config.labels[0][config.dataPointIndex]);
+                  console.log(config.dataPointIndex); // click index
+                  console.log(config.w.config.labels[0][config.dataPointIndex]); // clicked keyword
                   var kd = document.getElementById("kw_detail");
                   var kw = document.getElementById("selected_kw");
                   kw.innerHTML = config.w.config.labels[0][config.dataPointIndex]; // assign the keyword
@@ -329,10 +330,34 @@ export default {
               height: 440,
               stacked: true,
               events: {
-              click: function(event, chartContext, config) {
-                // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts
-                console.log('hw');
-              }
+                // a sample on click function
+              // click: function(event, chartContext, config) {
+              //   // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts
+              //   console.log('hw');
+              // }
+                // click: function(event, chartContext, config) {
+                //   // The last parameter config contains additional information like `seriesIndex` and `dataPointIndex` for cartesian charts
+                //   console.log(config.config.series[config.dataPointIndex]);
+                //   var kd = document.getElementById("kw_detail");
+                //     if (this.selected_kw==null){
+                //       kd.style.display = 'none';
+                //     }else{
+                //       kd.style.display = 'block';
+                //   }
+                // },
+                dataPointSelection: function(event, chartContext, config) {
+                  console.log(config.dataPointIndex); // click index
+                  console.log(config.w.config.labels[0][config.dataPointIndex]); // clicked keyword
+                  var kd = document.getElementById("kw_detail");
+                  var kw = document.getElementById("selected_kw");
+                  kw.innerHTML = config.w.config.labels[0][config.dataPointIndex]; // assign the keyword
+                  if (kw.innerHTML==null){
+                      kd.style.display = 'none';
+                    }else{
+                      kd.style.display = 'block';
+                  }
+                  // other things follows
+                }
             }
             },
             colors: ['#008FFB'],
@@ -399,8 +424,8 @@ export default {
             },
             title: {
               text: 'Extracted keywords, ranked by the keyword scores (teacher)',
-        align: "center",
-        floating: true
+              align: "center",
+              floating: true
             },
             xaxis: {
               categories: ['Keywords'],
@@ -429,4 +454,15 @@ export default {
         height: 60px;
         margin:30px;
     }
+
+    .links line {
+        stroke: #999;
+        stroke-opacity: 0.6;
+    }
+
+    .nodes circle {
+        stroke: #fff;
+        stroke-width: 1.5px;
+    }
+
 </style>
