@@ -1,14 +1,18 @@
-import uuid
+import sys
+import json
 import os
-from flask import Flask, jsonify, request
+import pickle
+import uuid
+import shutil
+import logging
+
+from flask import Flask, jsonify, request, send_file, send_from_directory, safe_join, abort, current_app
 # from flask_session import Session
 from redis import StrictRedis
 from redis.exceptions import ConnectionError
 from flask_cors import CORS, cross_origin
+from markupsafe import escape
 
-from flask import send_file, send_from_directory, safe_join, abort
-import sys
-import json
 sys.path.append('../model_T1/src')
 sys.path.append('../model_T1/src/sidekit')
 sys.path.append('../model_T2/src')
@@ -16,11 +20,6 @@ from pipeline import Pipeline
 from Proc1 import Proc1
 from Proc2 import Proc2
 from Proc3 import Proc3
-import pickle
-from flask import current_app
-from markupsafe import escape
-import shutil
-import logging
 
 
 
@@ -343,7 +342,7 @@ def predict():
     data = request.get_json()
     print("[/predictions] prediction request received: ", data)
     if request.method =='POST':
-        p = Pipeline(data, '/Users/zhaorui/work/cmad2.0/raw_data/','/Users/zhaorui/work/cmad2.0/processed_data/') ### TO CHANGE in production: absolute path
+        p = Pipeline(data, os.environ['PROJECT_DIR']+'/raw_data/',os.environ['PROJECT_DIR']+'/processed_data/') ### TO CHANGE in production: absolute path
         p.train(True)
         p.enroll()
         df_res = p.predict(eval=False, gtp=[])
@@ -380,7 +379,7 @@ def compute_p1():
     print("[/predictions] prediction request received: ", rq)
     if request.method =='POST':
 
-        infolder = '/Users/zhaorui/work/cmad2.0/processed_data/annotations/'
+        infolder = os.environ['PROJECT_DIR']+'/processed_data/annotations/'
         proc1 = Proc1(rq, infolder)
         res = proc1.main()
         print(res)
@@ -400,7 +399,7 @@ def compute_p2():
     print("[/predictions] prediction request received: ", rq)
     if request.method =='POST':
 
-        infolder = '/Users/zhaorui/work/cmad2.0/processed_data/annotations/'
+        infolder = os.environ['PROJECT_DIR']+'/processed_data/annotations/'
         proc2 = Proc2(rq, infolder)
         res = proc2.main()
         print(res)
@@ -420,8 +419,8 @@ def compute_p3():
     print("[/predictions] prediction request received: ", rq)
     if request.method =='POST':
 
-        infolder = '/Users/zhaorui/work/cmad2.0/processed_data/annotations/'
-        proc3 = Proc3(rq, infolder, '/Users/zhaorui/work/cmad2.0/model_T2/src/vocabs/tier23_np.pickle')
+        infolder = os.environ['PROJECT_DIR']+'/processed_data/annotations/'
+        proc3 = Proc3(rq, infolder, os.environ['PROJECT_DIR']+'/model_T2/src/vocabs/tier23_np.pickle')
         res = proc3.main()
         print(res)
 

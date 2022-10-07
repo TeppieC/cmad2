@@ -629,6 +629,7 @@ class Mixture(object):
         #     num_thread = 1
         #END
 
+        print('=====================================mixture.py',feature_list)
         features = features_server.stack_features(feature_list)
         n_frames = features.shape[0]
         mu = features.mean(0)
@@ -671,6 +672,8 @@ class Mixture(object):
         :return llk: a list of log-likelihoods obtained after each iteration
         """
         llk = []
+
+        print('=====================================mixture.py 2',feature_list)
 
         self._init(features_server, feature_list, num_thread)
 

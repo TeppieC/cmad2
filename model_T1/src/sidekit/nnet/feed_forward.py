@@ -363,7 +363,7 @@ class FForwardNetwork():
 
             # Create the directory if it doesn't exist
             dir_name = os.path.dirname(output_file_structure.format(show))  # get the path
-            if not os.path.exists(dir_name) and (dir_name is not ''):
+            if not os.path.exists(dir_name) and (dir_name != ''):
                 os.makedirs(dir_name)
 
             # Save in HDF5 format, labels are saved if they don't exist in the output file

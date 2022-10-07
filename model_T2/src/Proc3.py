@@ -2,7 +2,6 @@ import os
 import numpy as np
 from scipy.io import wavfile
 import pandas as pd
-
 from bs4 import BeautifulSoup
 import pickle
 from pprint import pprint
@@ -18,7 +17,7 @@ import json
 
 
 class Proc3(object):
-    """docstring for Proc3"""
+    """Corpus-based solution using AWL lists"""
     def __init__(self, rq, infolder, vocab):
         self.infolder = infolder
         self.rq = rq
@@ -41,8 +40,8 @@ class Proc3(object):
 
         return filename, sessionId, num_keywords, interval, pos_tags
 
-    def parse_annos(self, infolder, filename):
-        with open(infolder+filename+'_annos.pickle','rb') as f: # TO CHANGE: absolute path when in production
+    def parse_annos(self, filename):
+        with open(self.infolder+'/'+filename+'_annos.pickle','rb') as f: # TO CHANGE: absolute path when in production
             anno = pickle.load(f)  
 
         t_segs = []
@@ -68,7 +67,7 @@ class Proc3(object):
                         o_segs.append(float(k))
 
         # print(t_segs)
-        with open(infolder+filename+'_subs.txt','r') as f: # convert from subs file (TODO:everytime we should keep a copy of this file) # TO CHANGE: absolute path when in production
+        with open(self.infolder+'/'+filename+'_subs.txt','r') as f: # convert from subs file (TODO:everytime we should keep a copy of this file) # TO CHANGE: absolute path when in production
             subs = f.readlines()
         
         subs_dict = {}
@@ -243,5 +242,6 @@ class Proc3(object):
 
 
 if __name__ == '__main__':
-    pass
+    Proc3(os.environ['INFOLDER'], os.environ['TIER23_VOCAB'])
+
 

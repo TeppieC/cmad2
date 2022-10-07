@@ -442,7 +442,7 @@ class FeaturesExtractor(object):
         # Create the HDF5 file
         # Create the directory if it dosn't exist
         dir_name = os.path.dirname(feature_filename)  # get the path
-        if not os.path.exists(dir_name) and (dir_name is not ''):
+        if not os.path.exists(dir_name) and (dir_name != ''):
             os.makedirs(dir_name) 
 
         h5f = h5py.File(feature_filename, 'a', backing_store=backing_store, driver='core')
@@ -529,7 +529,7 @@ class FeaturesExtractor(object):
         feature_filename = feature_filename_structure.format(show)
         # logging.info('output finename: '+feature_filename)
         dir_name = os.path.dirname(feature_filename)  # get the path
-        if not os.path.exists(dir_name) and (dir_name is not ''):
+        if not os.path.exists(dir_name) and (dir_name != ''):
             os.makedirs(dir_name)
 
         h5f = h5py.File(feature_filename, 'a', backing_store=True, driver='core')

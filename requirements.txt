@@ -1,0 +1,28 @@
+# general
+numpy==1.23.3
+pandas==1.5.0
+spacy==3.4.1
+matplotlib
+
+# backend
+flask==1.1.2
+flask_cors==3.0.10
+redis
+markupsafe==1.1.1
+werkzeug==2.0.3
+
+# model_t1
+scipy==1.9.1
+h5py==3.7.0
+torchvision==0.13.1
+libsvm-official==3.30.0
+six
+pyparsing>=2.2.2
+tqdm>=4.31.1
+pyyaml==5.3.1
+
+# model_t2
+yake==0.4.8
+nltk==3.7
+beautifulsoup4==4.11.1
+

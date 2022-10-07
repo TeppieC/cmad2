@@ -579,6 +579,8 @@ class FeaturesServer(object):
         for idx, load_arg  in enumerate(zip(show_list, channel_list, feature_filename_list, label_list, start_list, stop_list)):
             features_list.append(self.load(*load_arg)[0])
 
+        print(features_list)
+        print(len(features_list))
         return numpy.vstack(features_list)
 
 

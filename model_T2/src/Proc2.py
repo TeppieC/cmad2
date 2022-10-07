@@ -2,7 +2,6 @@ import os
 import numpy as np
 from scipy.io import wavfile
 import pandas as pd
-
 from bs4 import BeautifulSoup
 import pickle
 from pprint import pprint
@@ -24,7 +23,7 @@ class Proc2(object):
     def __init__(self, rq, infolder, api_key):
         self.infolder = infolder
         self.rq = rq
-        self.api_key = '6f61e8fa-aa8b-43f6-b2fd-6f35e88ede42'
+        self.api_key = api_key
     
     def get_request(self, rq):
         rq_dict = rq
@@ -356,8 +355,7 @@ if __name__ == '__main__':
 
     rq_dict = {'filename':filename, 'sessionId':sessionId, 'stopwords':stoplist, 'num_keywords':num_keywords, 'interval':interval, 'no_bins':no_bins}
 
-    infolder = '/Users/zhaorui/work/cmad/processed_data/annotations/'
-    proc2 = Proc2(rq_dict, infolder)
+    proc2 = Proc2(rq_dict, os.environ['INFOLDER'], os.environ['BABELFY_API_KEY'])
     
     res = proc2.main()
     print(res)

@@ -4,7 +4,6 @@ import os
 import numpy as np
 from scipy.io import wavfile
 import pandas as pd
-import seaborn as sns
 from bs4 import BeautifulSoup
 import pickle
 from pprint import pprint
@@ -39,8 +38,8 @@ class Proc1(object):
 
         return filename, sessionId, stopwords, numOfKeywords, interval
 
-    def parse_annos(self, infolder, filename):
-        with open(infolder+filename+'_annos.pickle','rb') as f: # TO CHANGE: absolute path when in production
+    def parse_annos(self, filename):
+        with open(self.infolder+'/'+filename+'_annos.pickle','rb') as f: # TO CHANGE: absolute path when in production
             anno = pickle.load(f)  
 
         t_segs = []
@@ -66,7 +65,7 @@ class Proc1(object):
                         o_segs.append(float(k))
 
         # print(t_segs)
-        with open(infolder+filename+'_subs.txt','r') as f: # convert from subs file (TODO:everytime we should keep a copy of this file) # TO CHANGE: absolute path when in production
+        with open(self.infolder+'/'+filename+'_subs.txt','r') as f: # convert from subs file (TODO:everytime we should keep a copy of this file) # TO CHANGE: absolute path when in production
             subs = f.readlines()
         
         subs_dict = {}
@@ -219,8 +218,7 @@ if __name__ == '__main__':
 
     rq_dict = {'filename':filename, 'sessionId':sessionId, 'stopwords':stoplist, 'numOfKeywords':numOfKeywords, 'interval':interval, 'no_bins':no_bins}
 
-    infolder = '/Users/zhaorui/work/cmad/processed_data/annotations/'
-    proc1 = Proc1(rq_dict, infolder)
+    proc1 = Proc1(rq_dict, os.environ['INFOLDER'])
     
     res = proc1.main()
     print(res)
